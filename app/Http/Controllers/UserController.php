@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\UserExport;
 use App\Models\User;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Testing\Fluent\Concerns\Has;
+use Maatwebsite\Excel\Facades\Excel;
 
 class UserController extends Controller
 {
@@ -66,7 +69,7 @@ class UserController extends Controller
     {
         $request->validate([
             'nama' => 'required',
-            'email' => 'required|unique:users,email,'.$id,
+            'email' => 'required|unique:users,email,' . $id,
             'jabatan' => 'required',
             'password' => 'nullable|confirmed|min:8',
         ], [
@@ -82,16 +85,36 @@ class UserController extends Controller
         $user->nama = $request->nama;
         $user->email = $request->email;
         $user->jabatan = $request->jabatan;
-        if ($request->filled('password')){
-             $user->password = Hash::make($request->password);
-        }  
+        if ($request->filled('password')) {
+            $user->password = Hash::make($request->password);
+        }
         $user->save();
 
         return redirect()->route('user')->with('success', 'Data Berhasil Di Edit');
     }
-    public function destroy($id){
+    public function destroy($id)
+    {
         $user = User::findOrFail($id);
         $user->delete();
-          return redirect()->route('user')->with('success', 'Data Berhasil Di Hapus');
+        return redirect()->route('user')->with('success', 'Data Berhasil Di Hapus');
+    }
+
+    public function excel()
+    {
+        $filename = now()->format('d-m-Y_H.i.s');
+        return Excel::download(new UserExport, 'DataUser_' . $filename . '.xlsx');
+    }
+
+    public function pdf()
+    {
+        $filename = now()->format('d-m-Y_H.i.s');
+        $data = array(
+            'user' => User::get(),
+            'tanggal' => now()->format('d-m-Y'),
+            'jam' => now()->format('H.i.s'),
+        );
+
+        $pdf = Pdf::loadView('admin/user/pdf', $data);
+        return $pdf->setPaper('a4', 'landscape')->stream('DataUser_' . $filename . '.pdf');
     }
 }
