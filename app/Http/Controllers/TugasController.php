@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Exports\TugasExport;
 use App\Models\Tugas;
 use App\Models\User;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -104,5 +105,18 @@ class TugasController extends Controller
     {
         $filename = now()->format('d-m-Y_H.i.s');
         return Excel::download(new TugasExport, 'DataTugas_' . $filename . '.xlsx');
+    }
+
+      public function pdf()
+    {
+        $filename = now()->format('d-m-Y_H.i.s');
+        $data = array(
+            'tugas' => Tugas::with('user')->get(),
+            'tanggal' => now()->format('d-m-Y'),
+            'jam' => now()->format('H.i.s'),
+        );
+
+        $pdf = Pdf::loadView('admin/tugas/pdf', $data);
+        return $pdf->setPaper('a4', 'landscape')->download('DataTugas_' . $filename . '.pdf');
     }
 }
