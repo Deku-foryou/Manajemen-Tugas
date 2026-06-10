@@ -1,4 +1,3 @@
-```
 # Aplikasi Manajemen Tugas Karyawan (UAS_078)
 
 Aplikasi berbasis web untuk mengelola penugasan karyawan, dilengkapi dengan sistem autentikasi multi-role (Admin & Karyawan), dashboard statistik, serta fitur ekspor laporan.
@@ -29,58 +28,32 @@ Aplikasi berbasis web untuk mengelola penugasan karyawan, dilengkapi dengan sist
 ```bash
 git clone <url-repositori-kamu>
 cd UAS_078
-```
-
-### 2. Install Dependencies
-
-**Bash**
-
-```
+2. Install Dependencies
+Bash
 composer install
-```
+(Jika ekstensi zip di lokal bermasalah, gunakan perintah yang sebelumnya: composer require "maatwebsite/excel:^3.1" --ignore-platform-req=ext-zip)
 
-*(Jika ekstensi zip di lokal bermasalah, gunakan perintah yang sebelumnya: `composer require "maatwebsite/excel:^3.1" --ignore-platform-req=ext-zip`)*
+3. Konfigurasi Environment (.env)
+Copy file .env.example menjadi .env:
 
-### 3. Konfigurasi Environment (.env)
-
-Copy file `.env.example` menjadi `.env`:
-
-**Bash**
-
-```
+Bash
 cp .env.example .env
-```
+Buka file .env dan sesuaikan nama database Anda:
 
-Buka file `.env` dan sesuaikan nama database Anda:
-
-**Cuplikan kode**
-
-```
+Cuplikan kode
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
 DB_PORT=3306
 DB_DATABASE=
 DB_USERNAME=
 DB_PASSWORD=
-```
-
-### 4. Generate Key & Migrasi Database
-
-**Bash**
-
-```
+4. Generate Key & Migrasi Database
+Bash
 php artisan key:generate
 php artisan migrate --seed
-```
+5. Jalankan Aplikasi
+Jika menggunakan Laragon, buka uas_078.test di browser. Jika menggunakan server bawaan Laravel, jalankan:
 
-### 5. Jalankan Aplikasi
-
-Jika menggunakan Laragon, buka `uas_078.test` di browser. Jika menggunakan server bawaan Laravel, jalankan:
-
-**Bash**
-
-```
+Bash
 php artisan serve
-```
-
-Akses melalui `http://127.0.0.1:8000`.
+Akses melalui http://127.0.0.1:8000.
